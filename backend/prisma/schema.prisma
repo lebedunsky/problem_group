@@ -1,0 +1,265 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+}
+
+enum RequestStatus {
+  NEW
+  REVIEWING
+  APPROVED
+  REJECTED
+}
+
+enum PlanStatus {
+  PLANNED
+  IN_PROGRESS
+  DONE
+  POSTPONED
+}
+
+enum ScheduleStatus {
+  PLANNED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum ResultType {
+  PROJECT
+  RESEARCH
+  PRESENTATION
+  ARTICLE
+  REPORT
+  DEVELOPMENT
+  CONFERENCE
+  CONTEST
+  OTHER
+}
+
+enum ResultStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+  PUBLISHED
+}
+
+enum MaterialType {
+  PDF
+  PRESENTATION
+  DOCUMENT
+  LINK
+  SQL
+  VIDEO
+  OTHER
+}
+
+model User {
+  id           String   @id @default(uuid())
+  login        String   @unique
+  passwordHash String
+  role         UserRole @default(ADMIN)
+  createdAt    DateTime @default(now())
+}
+
+model GroupSettings {
+  id                String @id @default("main")
+  name              String
+  topic             String
+  shortDescription  String @db.Text
+  description       String @db.Text
+  goal              String @db.Text
+  tasks             String @db.Text
+  activityDirections String @db.Text
+  activityInfo      String @db.Text
+  leaderName        String
+  leaderTitle       String
+  leaderBio         String @db.Text
+  leaderPhotoUrl    String?
+  email             String
+  phone             String
+  address           String
+  scheduleNote      String
+  updatedAt         DateTime @updatedAt
+}
+
+model Participant {
+  id             String   @id @default(uuid())
+  firstName      String
+  lastName       String
+  photoUrl       String?
+  academicGroup  String
+  course         Int
+  role           String
+  direction      String
+  bio            String   @db.Text
+  email          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  meetingLinks   MeetingParticipant[]
+  presentations  Presentation[]
+  resultAuthors  ResultAuthor[]
+  workPlanItems  WorkPlanItem[]
+  scheduleItems  ScheduleItem[]
+}
+
+model RegistrationRequest {
+  id            String        @id @default(uuid())
+  firstName     String
+  lastName      String
+  email         String
+  phone         String
+  academicGroup String
+  course        Int
+  direction     String
+  about         String        @db.Text
+  motivation    String        @db.Text
+  status        RequestStatus @default(NEW)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model WorkPlanItem {
+  id            String     @id @default(uuid())
+  date          DateTime
+  title         String
+  description   String     @db.Text
+  workType      String
+  status        PlanStatus @default(PLANNED)
+  responsibleId String?
+  responsible   Participant? @relation(fields: [responsibleId], references: [id], onDelete: SetNull)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model ScheduleItem {
+  id            String         @id @default(uuid())
+  date          DateTime
+  time          String
+  location      String
+  topic         String
+  status        ScheduleStatus @default(PLANNED)
+  responsibleId String?
+  responsible   Participant?   @relation(fields: [responsibleId], references: [id], onDelete: SetNull)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Meeting {
+  id               String   @id @default(uuid())
+  number           Int      @unique
+  date             DateTime
+  time             String
+  topic            String
+  shortDescription String   @db.Text
+  agenda           String   @db.Text
+  discussion       String   @db.Text
+  results          String   @db.Text
+  conclusions      String   @db.Text
+  photoUrl         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  participants     MeetingParticipant[]
+  presentations    Presentation[]
+  materials        Material[]
+}
+
+model MeetingParticipant {
+  meetingId     String
+  participantId String
+  meeting       Meeting     @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@id([meetingId, participantId])
+}
+
+model Presentation {
+  id              String      @id @default(uuid())
+  meetingId       String
+  participantId   String
+  title           String
+  description     String      @db.Text
+  materialUrl     String?
+  durationMinutes Int
+  meeting         Meeting     @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  participant     Participant @relation(fields: [participantId], references: [id], onDelete: Restrict)
+  createdAt       DateTime    @default(now())
+}
+
+model Result {
+  id           String       @id @default(uuid())
+  title        String
+  description  String       @db.Text
+  date         DateTime
+  supervisor   String
+  type         ResultType
+  category     String
+  link         String?
+  fileUrl      String?
+  status       ResultStatus @default(COMPLETED)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  authors      ResultAuthor[]
+  materials    Material[]
+}
+
+model ResultAuthor {
+  resultId      String
+  participantId String
+  result        Result      @relation(fields: [resultId], references: [id], onDelete: Cascade)
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@id([resultId, participantId])
+}
+
+model Category {
+  id    String @id @default(uuid())
+  name  String @unique
+  slug  String @unique
+  news  News[]
+}
+
+model News {
+  id         String    @id @default(uuid())
+  title      String
+  excerpt    String    @db.Text
+  content    String    @db.Text
+  date       DateTime
+  author     String
+  imageUrl   String?
+  published  Boolean   @default(true)
+  categoryId String
+  category   Category  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  materials  Material[]
+}
+
+model Material {
+  id          String       @id @default(uuid())
+  title       String
+  description String       @db.Text
+  type        MaterialType
+  category    String
+  author      String
+  date        DateTime
+  fileUrl     String?
+  url         String?
+  meetingId   String?
+  newsId      String?
+  resultId    String?
+  meeting     Meeting?     @relation(fields: [meetingId], references: [id], onDelete: SetNull)
+  news        News?        @relation(fields: [newsId], references: [id], onDelete: SetNull)
+  result      Result?      @relation(fields: [resultId], references: [id], onDelete: SetNull)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
