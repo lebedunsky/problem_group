@@ -58,7 +58,8 @@ export function ParticipantsAdmin() {
               <tr key={p.id}>
                 <td>{fullName(p)}</td>
                 <td>
-                  {p.academicGroup}, {p.course} курс
+                  {p.academicGroup}
+                  {p.course > 0 ? `, ${p.course} курс` : ""}
                 </td>
                 <td>{p.role}</td>
                 <td>

@@ -20,11 +20,9 @@ export function HomePage() {
     <>
       <section className="hero">
         <div className="container">
-          <p className="eyebrow">Університетська проблемна група</p>
+          <p className="eyebrow">ЗУНУ · Факультет комп’ютерних інформаційних технологій</p>
           <h1>{s.name}</h1>
-          <p className="lead">
-            Тема: {s.topic}. {s.shortDescription}
-          </p>
+          <p className="lead">{s.shortDescription}</p>
           <p className="lead">Мета: {s.goal}</p>
           <div className="actions">
             <Link className="btn" to="/register">
@@ -34,6 +32,23 @@ export function HomePage() {
               Про групу
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container grid grid-3">
+          <article className="card photo-card">
+            <img src="/images/home-1.jpg" alt="Реляційне проектування баз даних" />
+            <p>Реляційний підхід і нормалізація відношень</p>
+          </article>
+          <article className="card photo-card">
+            <img src="/images/home-2.jpg" alt="Сучасні технології баз даних" />
+            <p>Сучасні технології проектування та NoSQL</p>
+          </article>
+          <article className="card photo-card">
+            <img src="/images/home-3.jpg" alt="Засідання проблемної групи" />
+            <p>Засідання — остання середа кожного місяця</p>
+          </article>
         </div>
       </section>
 

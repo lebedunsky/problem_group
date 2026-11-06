@@ -15,7 +15,7 @@ export function ParticipantsPage() {
     [data]
   );
   const courses = useMemo(
-    () => Array.from(new Set((data || []).map((p) => p.course))).sort(),
+    () => Array.from(new Set((data || []).map((p) => p.course).filter((c) => c > 0))).sort(),
     [data]
   );
 
@@ -65,7 +65,8 @@ export function ParticipantsPage() {
                     {fullName(p)}
                   </h3>
                   <p className="muted">
-                    {p.academicGroup} · {p.course} курс · {p.role}
+                    {p.academicGroup}
+                    {p.course > 0 ? ` · ${p.course} курс` : ""} · {p.role}
                   </p>
                   <span className="badge">{p.direction}</span>
                   <p>{p.bio}</p>
