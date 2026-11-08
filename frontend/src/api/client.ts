@@ -1,4 +1,16 @@
 const TOKEN_KEY = "pg_token";
+const API_URL = String(import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
+
+export function apiUrl(path: string) {
+  if (!path.startsWith("/")) return path;
+  return `${API_URL}${path}`;
+}
+
+export function mediaUrl(path?: string | null) {
+  if (!path) return "";
+  if (/^https?:\/\//i.test(path)) return path;
+  return apiUrl(path.startsWith("/") ? path : `/${path}`);
+}
 
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
@@ -24,7 +36,7 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
   }
   const token = getToken();
   if (token) headers.set("Authorization", `Bearer ${token}`);
-  const res = await fetch(path, { ...options, headers });
+  const res = await fetch(apiUrl(path), { ...options, headers });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     throw new ApiError(res.status, data.error || "Помилка запиту");

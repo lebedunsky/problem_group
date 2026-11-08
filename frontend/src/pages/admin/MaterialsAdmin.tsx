@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { getToken } from "../../api/client";
+import { api } from "../../api/client";
 import { materialType } from "../../lib/labels";
 import type { Material } from "../../types";
 import { AdminBar, Field, isoDate, Modal, useCrud } from "./crud";
@@ -13,15 +13,10 @@ export function MaterialsAdmin() {
     e.preventDefault();
     setSaving(true);
     const form = new FormData(e.currentTarget);
-    const token = getToken();
-    const res = await fetch("/api/materials", {
-      method: "POST",
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-      body: form,
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      alert(data.error || "Помилка завантаження");
+    try {
+      await api("/api/materials", { method: "POST", body: form });
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Помилка завантаження");
       setSaving(false);
       return;
     }

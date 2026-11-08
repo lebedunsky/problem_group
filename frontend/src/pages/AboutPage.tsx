@@ -1,3 +1,4 @@
+import { mediaUrl } from "../api/client";
 import { ErrorBox, Spinner } from "../components/ui";
 import { useApi } from "../hooks/useApi";
 import { splitLines } from "../lib/labels";
@@ -44,7 +45,7 @@ export function AboutPage() {
           </article>
         </div>
         <article className="card person" style={{ marginTop: 18 }}>
-          {data.leaderPhotoUrl && <img className="avatar" src={data.leaderPhotoUrl} alt="" />}
+          {data.leaderPhotoUrl && <img className="avatar" src={mediaUrl(data.leaderPhotoUrl)} alt="" />}
           <div>
             <p className="eyebrow">Керівник</p>
             <h3 className="serif" style={{ margin: "0 0 6px" }}>

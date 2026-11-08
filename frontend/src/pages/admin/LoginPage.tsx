@@ -42,9 +42,6 @@ export function LoginPage() {
           <button className="btn" disabled={loading}>
             {loading ? "Вхід…" : "Увійти"}
           </button>
-          <p className="muted" style={{ marginTop: 16 }}>
-            Тестовий вхід: логін <strong>admin</strong>, пароль <strong>Admin123!</strong>
-          </p>
         </form>
       </div>
     </main>

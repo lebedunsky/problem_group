@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { mediaUrl } from "../api/client";
 import { ErrorBox, Spinner } from "../components/ui";
 import { useApi } from "../hooks/useApi";
 import { formatDate, fullName, splitLines } from "../lib/labels";
@@ -19,7 +20,7 @@ export function MeetingDetailPage() {
         <p className="muted">
           {formatDate(data.date)} · {data.time}
         </p>
-        {data.photoUrl && <img src={data.photoUrl} alt="" style={{ borderRadius: 16, margin: "16px 0" }} />}
+        {data.photoUrl && <img src={mediaUrl(data.photoUrl)} alt="" style={{ borderRadius: 16, margin: "16px 0" }} />}
         <div className="grid grid-2">
           <article className="card">
             <h3>Короткий опис</h3>
@@ -64,7 +65,7 @@ export function MeetingDetailPage() {
               <p>{p.description}</p>
               <p className="muted">Тривалість: {p.durationMinutes} хв.</p>
               {p.materialUrl && (
-                <a href={p.materialUrl} target="_blank" rel="noreferrer">
+                <a href={mediaUrl(p.materialUrl)} target="_blank" rel="noreferrer">
                   Матеріал виступу
                 </a>
               )}

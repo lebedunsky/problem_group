@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { mediaUrl } from "../api/client";
 import { Empty, ErrorBox, Spinner } from "../components/ui";
 import { useApi } from "../hooks/useApi";
 import { fullName } from "../lib/labels";
@@ -59,7 +60,7 @@ export function ParticipantsPage() {
           <div className="grid grid-2">
             {filtered.map((p) => (
               <article className="card person" key={p.id}>
-                <img className="avatar" src={p.photoUrl || ""} alt="" />
+                <img className="avatar" src={mediaUrl(p.photoUrl)} alt="" />
                 <div>
                   <h3 className="serif" style={{ margin: "0 0 4px" }}>
                     {fullName(p)}

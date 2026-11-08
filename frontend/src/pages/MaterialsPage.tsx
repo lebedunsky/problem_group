@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Badge, Empty, ErrorBox, Spinner } from "../components/ui";
 import { useApi } from "../hooks/useApi";
+import { mediaUrl } from "../api/client";
 import { formatDate, materialType } from "../lib/labels";
 import type { Material } from "../types";
 
@@ -32,7 +33,7 @@ export function MaterialsPage() {
         {!loading && (data || []).length === 0 && <Empty title="Матеріалів немає" />}
         <div className="grid grid-2">
           {(data || []).map((m) => {
-            const href = m.fileUrl || m.url;
+            const href = mediaUrl(m.fileUrl) || m.url;
             return (
               <article className="card" key={m.id}>
                 <Badge value={m.type} map={materialType} />

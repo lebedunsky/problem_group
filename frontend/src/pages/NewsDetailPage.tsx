@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { mediaUrl } from "../api/client";
 import { ErrorBox, Spinner } from "../components/ui";
 import { useApi } from "../hooks/useApi";
 import { formatDate } from "../lib/labels";
@@ -18,7 +19,7 @@ export function NewsDetailPage() {
         <p className="muted">
           {formatDate(data.date)} · {data.author}
         </p>
-        {data.imageUrl && <img src={data.imageUrl} alt="" />}
+        {data.imageUrl && <img src={mediaUrl(data.imageUrl)} alt="" />}
         <article className="card">
           <p>{data.excerpt}</p>
           <p style={{ whiteSpace: "pre-wrap" }}>{data.content}</p>
