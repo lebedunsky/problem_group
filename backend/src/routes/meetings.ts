@@ -56,7 +56,7 @@ meetingsRouter.get(
   "/:id",
   asyncHandler(async (req, res) => {
     const item = await prisma.meeting.findUnique({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       include,
     });
     if (!item) {
@@ -108,21 +108,22 @@ meetingsRouter.put(
   requireAdmin,
   asyncHandler(async (req, res) => {
     const { participantIds, presentations, ...rest } = req.body;
+    const meetingId = String(req.params.id);
     const item = await prisma.$transaction(async (tx) => {
       if (participantIds) {
-        await tx.meetingParticipant.deleteMany({ where: { meetingId: req.params.id } });
+        await tx.meetingParticipant.deleteMany({ where: { meetingId } });
         await tx.meetingParticipant.createMany({
           data: (participantIds as string[]).map((id) => ({
-            meetingId: req.params.id,
+            meetingId,
             participantId: id,
           })),
         });
       }
       if (presentations) {
-        await tx.presentation.deleteMany({ where: { meetingId: req.params.id } });
+        await tx.presentation.deleteMany({ where: { meetingId } });
         await tx.presentation.createMany({
           data: (presentations as Array<Record<string, unknown>>).map((p) => ({
-            meetingId: req.params.id,
+            meetingId,
             participantId: String(p.participantId),
             title: String(p.title),
             description: String(p.description || ""),
@@ -132,7 +133,7 @@ meetingsRouter.put(
         });
       }
       return tx.meeting.update({
-        where: { id: req.params.id },
+        where: { id: meetingId },
         data: {
           number: rest.number !== undefined ? Number(rest.number) : undefined,
           date: rest.date ? new Date(rest.date) : undefined,
@@ -156,7 +157,7 @@ meetingsRouter.delete(
   "/:id",
   requireAdmin,
   asyncHandler(async (req, res) => {
-    await prisma.meeting.delete({ where: { id: req.params.id } });
+    await prisma.meeting.delete({ where: { id: String(req.params.id) } });
     res.json({ ok: true });
   })
 );

@@ -57,9 +57,10 @@ materialsRouter.put(
   requireAdmin,
   upload.single("file"),
   asyncHandler(async (req, res) => {
+    const id = String(req.params.id);
     const fileUrl = req.file ? `/uploads/${req.file.filename}` : req.body.fileUrl;
     const item = await prisma.material.update({
-      where: { id: req.params.id },
+      where: { id },
       data: {
         title: req.body.title,
         description: req.body.description,
@@ -82,7 +83,7 @@ materialsRouter.delete(
   "/:id",
   requireAdmin,
   asyncHandler(async (req, res) => {
-    await prisma.material.delete({ where: { id: req.params.id } });
+    await prisma.material.delete({ where: { id: String(req.params.id) } });
     res.json({ ok: true });
   })
 );

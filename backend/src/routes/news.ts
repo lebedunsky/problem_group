@@ -42,7 +42,7 @@ newsRouter.get(
   "/:id",
   asyncHandler(async (req, res) => {
     const item = await prisma.news.findUnique({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       include: { category: true, materials: true },
     });
     if (!item) {
@@ -79,7 +79,7 @@ newsRouter.put(
   requireAdmin,
   asyncHandler(async (req, res) => {
     const item = await prisma.news.update({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       data: {
         title: req.body.title,
         excerpt: req.body.excerpt,
@@ -100,7 +100,7 @@ newsRouter.delete(
   "/:id",
   requireAdmin,
   asyncHandler(async (req, res) => {
-    await prisma.news.delete({ where: { id: req.params.id } });
+    await prisma.news.delete({ where: { id: String(req.params.id) } });
     res.json({ ok: true });
   })
 );

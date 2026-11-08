@@ -50,7 +50,7 @@ registrationsRouter.put(
   requireAdmin,
   asyncHandler(async (req, res) => {
     const item = await prisma.registrationRequest.update({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       data: { status: req.body.status },
     });
     res.json(item);
@@ -98,7 +98,7 @@ registrationsRouter.delete(
   "/:id",
   requireAdmin,
   asyncHandler(async (req, res) => {
-    await prisma.registrationRequest.delete({ where: { id: req.params.id } });
+    await prisma.registrationRequest.delete({ where: { id: String(req.params.id) } });
     res.json({ ok: true });
   })
 );

@@ -44,7 +44,7 @@ workPlanRouter.put(
   requireAdmin,
   asyncHandler(async (req, res) => {
     const item = await prisma.workPlanItem.update({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       data: {
         date: req.body.date ? new Date(req.body.date) : undefined,
         title: req.body.title,
@@ -63,7 +63,7 @@ workPlanRouter.delete(
   "/:id",
   requireAdmin,
   asyncHandler(async (req, res) => {
-    await prisma.workPlanItem.delete({ where: { id: req.params.id } });
+    await prisma.workPlanItem.delete({ where: { id: String(req.params.id) } });
     res.json({ ok: true });
   })
 );

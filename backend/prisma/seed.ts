@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Participant, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -97,7 +97,7 @@ async function main() {
     ["В.", "Петеляк", "КІ-31", 3, "Учасник", "Безпека даних", "Студент групи КІ-31."],
   ] as const;
 
-  const participants = [];
+  const participants: Participant[] = [];
   for (const [firstName, lastName, academicGroup, course, role, direction, bio] of people) {
     participants.push(
       await prisma.participant.create({

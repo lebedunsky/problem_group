@@ -59,7 +59,7 @@ scheduleRouter.put(
   requireAdmin,
   asyncHandler(async (req, res) => {
     const item = await prisma.scheduleItem.update({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       data: {
         date: req.body.date ? new Date(req.body.date) : undefined,
         time: req.body.time,
@@ -78,7 +78,7 @@ scheduleRouter.delete(
   "/:id",
   requireAdmin,
   asyncHandler(async (req, res) => {
-    await prisma.scheduleItem.delete({ where: { id: req.params.id } });
+    await prisma.scheduleItem.delete({ where: { id: String(req.params.id) } });
     res.json({ ok: true });
   })
 );

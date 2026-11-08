@@ -23,7 +23,7 @@ resultsRouter.get(
 resultsRouter.get(
   "/:id",
   asyncHandler(async (req, res) => {
-    const item = await prisma.result.findUnique({ where: { id: req.params.id }, include });
+    const item = await prisma.result.findUnique({ where: { id: String(req.params.id) }, include });
     if (!item) {
       res.status(404).json({ error: "Результат не знайдено" });
       return;
@@ -63,18 +63,19 @@ resultsRouter.put(
   requireAdmin,
   asyncHandler(async (req, res) => {
     const { authorIds, ...rest } = req.body;
+    const resultId = String(req.params.id);
     const item = await prisma.$transaction(async (tx) => {
       if (authorIds) {
-        await tx.resultAuthor.deleteMany({ where: { resultId: req.params.id } });
+        await tx.resultAuthor.deleteMany({ where: { resultId } });
         await tx.resultAuthor.createMany({
           data: (authorIds as string[]).map((id) => ({
-            resultId: req.params.id,
+            resultId,
             participantId: id,
           })),
         });
       }
       return tx.result.update({
-        where: { id: req.params.id },
+        where: { id: resultId },
         data: {
           title: rest.title,
           description: rest.description,
@@ -97,7 +98,7 @@ resultsRouter.delete(
   "/:id",
   requireAdmin,
   asyncHandler(async (req, res) => {
-    await prisma.result.delete({ where: { id: req.params.id } });
+    await prisma.result.delete({ where: { id: String(req.params.id) } });
     res.json({ ok: true });
   })
 );
