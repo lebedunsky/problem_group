@@ -4,6 +4,7 @@ import { useApi } from "../../hooks/useApi";
 import { formatDate, fullName } from "../../lib/labels";
 import type { Meeting, Participant, Presentation } from "../../types";
 import { AdminBar, Field, isoDate, Modal, SaveForm, useCrud } from "./crud";
+import { FileField } from "./FileField";
 
 type FormMeeting = Partial<Meeting> & {
   participantIds?: string[];
@@ -120,9 +121,12 @@ export function MeetingsAdmin() {
             <Field label="Висновки">
               <textarea value={edit.conclusions || ""} onChange={(e) => setEdit({ ...edit, conclusions: e.target.value })} />
             </Field>
-            <Field label="Фото URL">
-              <input value={edit.photoUrl || ""} onChange={(e) => setEdit({ ...edit, photoUrl: e.target.value })} />
-            </Field>
+            <FileField
+              label="Фото"
+              accept="image/*"
+              value={edit.photoUrl || ""}
+              onChange={(photoUrl) => setEdit({ ...edit, photoUrl })}
+            />
             <Field label="Учасники">
               <select
                 multiple
@@ -160,9 +164,11 @@ export function MeetingsAdmin() {
                 <Field label="Опис">
                   <textarea value={p.description} onChange={(e) => updateTalk(i, { description: e.target.value })} />
                 </Field>
-                <Field label="Посилання на матеріал">
-                  <input value={p.materialUrl || ""} onChange={(e) => updateTalk(i, { materialUrl: e.target.value })} />
-                </Field>
+                <FileField
+                  label="Матеріал виступу"
+                  value={p.materialUrl || ""}
+                  onChange={(materialUrl) => updateTalk(i, { materialUrl })}
+                />
                 <Field label="Тривалість, хв">
                   <input
                     type="number"

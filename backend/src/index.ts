@@ -17,7 +17,30 @@ import { materialsRouter, uploadsRouter } from "./routes/materials";
 const app = express();
 const port = Number(process.env.PORT || 4000);
 
-app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
+function normalizeOrigin(url: string) {
+  return url.trim().replace(/\/+$/, "");
+}
+
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+  .split(",")
+  .map(normalizeOrigin)
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+      if (allowedOrigins.includes(normalizeOrigin(origin))) {
+        callback(null, origin);
+        return;
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+  })
+);
 app.use(express.json({ limit: "10mb" }));
 app.use("/uploads", express.static(path.join(process.cwd(), process.env.UPLOAD_DIR || "uploads")));
 

@@ -4,6 +4,7 @@ import { useApi } from "../../hooks/useApi";
 import { fullName, resultStatus, resultType } from "../../lib/labels";
 import type { Participant, ResultItem } from "../../types";
 import { AdminBar, Field, isoDate, Modal, SaveForm, useCrud } from "./crud";
+import { FileField } from "./FileField";
 
 export function ResultsAdmin() {
   const { items, reload, remove, toast } = useCrud<ResultItem>("/api/results");
@@ -84,9 +85,11 @@ export function ResultsAdmin() {
             <Field label="Посилання">
               <input value={edit.link || ""} onChange={(e) => setEdit({ ...edit, link: e.target.value })} />
             </Field>
-            <Field label="Файл URL">
-              <input value={edit.fileUrl || ""} onChange={(e) => setEdit({ ...edit, fileUrl: e.target.value })} />
-            </Field>
+            <FileField
+              label="Файл"
+              value={edit.fileUrl || ""}
+              onChange={(fileUrl) => setEdit({ ...edit, fileUrl })}
+            />
             <Field label="Статус">
               <select value={edit.status} onChange={(e) => setEdit({ ...edit, status: e.target.value })}>
                 {Object.entries(resultStatus).map(([k, v]) => (

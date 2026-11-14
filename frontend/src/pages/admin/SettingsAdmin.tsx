@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { put } from "../../api/client";
 import { Field } from "../../components/ui";
+import { FileField } from "./FileField";
 import { useApi } from "../../hooks/useApi";
 import type { GroupSettings } from "../../types";
 
@@ -38,7 +39,6 @@ export function SettingsAdmin() {
             ["leaderName", "Керівник"],
             ["leaderTitle", "Посада керівника"],
             ["leaderBio", "Біографія керівника"],
-            ["leaderPhotoUrl", "Фото керівника"],
             ["email", "Email"],
             ["phone", "Телефон"],
             ["address", "Адреса"],
@@ -62,6 +62,12 @@ export function SettingsAdmin() {
             )}
           </Field>
         ))}
+        <FileField
+          label="Фото керівника"
+          accept="image/*"
+          value={form.leaderPhotoUrl || ""}
+          onChange={(leaderPhotoUrl) => setForm({ ...form, leaderPhotoUrl })}
+        />
         {ok && <p className="badge ok">{ok}</p>}
         <button className="btn">Зберегти</button>
       </form>

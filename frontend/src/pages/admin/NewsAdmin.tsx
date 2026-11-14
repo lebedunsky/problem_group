@@ -3,6 +3,7 @@ import { post, put } from "../../api/client";
 import { useApi } from "../../hooks/useApi";
 import type { Category, NewsItem } from "../../types";
 import { AdminBar, Field, isoDate, Modal, SaveForm, useCrud } from "./crud";
+import { FileField } from "./FileField";
 
 export function NewsAdmin() {
   const { items, reload, remove, toast } = useCrud<NewsItem>("/api/news?published=all");
@@ -78,9 +79,12 @@ export function NewsAdmin() {
                 ))}
               </select>
             </Field>
-            <Field label="Зображення URL">
-              <input value={edit.imageUrl || ""} onChange={(e) => setEdit({ ...edit, imageUrl: e.target.value })} />
-            </Field>
+            <FileField
+              label="Зображення"
+              accept="image/*"
+              value={edit.imageUrl || ""}
+              onChange={(imageUrl) => setEdit({ ...edit, imageUrl })}
+            />
             <label>
               <input
                 type="checkbox"

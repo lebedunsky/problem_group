@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { mediaUrl } from "../api/client";
 import { Badge, Empty, ErrorBox, Spinner } from "../components/ui";
 import { useApi } from "../hooks/useApi";
 import { formatDate, fullName, resultStatus, resultType } from "../lib/labels";
@@ -48,6 +49,13 @@ export function ResultsPage() {
                   <p>
                     <a href={r.link} target="_blank" rel="noreferrer">
                       Посилання
+                    </a>
+                  </p>
+                )}
+                {r.fileUrl && (
+                  <p>
+                    <a href={mediaUrl(r.fileUrl)} target="_blank" rel="noreferrer">
+                      Файл
                     </a>
                   </p>
                 )}

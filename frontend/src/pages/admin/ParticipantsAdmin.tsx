@@ -3,6 +3,7 @@ import { post, put } from "../../api/client";
 import { fullName } from "../../lib/labels";
 import type { Participant } from "../../types";
 import { AdminBar, Field, Modal, SaveForm, useCrud } from "./crud";
+import { FileField } from "./FileField";
 
 const empty = {
   firstName: "",
@@ -85,9 +86,12 @@ export function ParticipantsAdmin() {
             <Field label="Прізвище">
               <input value={edit.lastName || ""} onChange={(e) => setEdit({ ...edit, lastName: e.target.value })} />
             </Field>
-            <Field label="Фото URL">
-              <input value={edit.photoUrl || ""} onChange={(e) => setEdit({ ...edit, photoUrl: e.target.value })} />
-            </Field>
+            <FileField
+              label="Фото"
+              accept="image/*"
+              value={edit.photoUrl || ""}
+              onChange={(photoUrl) => setEdit({ ...edit, photoUrl })}
+            />
             <Field label="Навчальна група">
               <input
                 value={edit.academicGroup || ""}

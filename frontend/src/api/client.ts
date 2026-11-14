@@ -1,5 +1,7 @@
 const TOKEN_KEY = "pg_token";
-const API_URL = String(import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
+// У dev браузер ходить на свій localhost, а Vite пересилає запит на Render.
+// Інакше Render відхиляє Origin http://localhost:5173.
+const API_URL = import.meta.env.DEV ? "" : String(import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 
 export function apiUrl(path: string) {
   if (!path.startsWith("/")) return path;
